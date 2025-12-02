@@ -6,6 +6,22 @@ defmodule LocalCafe do
   alias LocalCafe.Site
   alias LocalCafe.Location
 
+  # Helper function to generate paths with domain base path prefix
+  defp path(assigns, path) do
+    # Extract base path from domain (e.g., "https://user.github.io/repo" -> "/repo")
+    base = case Map.get(assigns.site_settings, :domain) do
+      nil -> ""
+      domain ->
+        uri = URI.parse(domain)
+        uri.path || ""
+    end
+
+    # Ensure base doesn't end with / and path starts with /
+    base = String.trim_trailing(base, "/")
+    path = if String.starts_with?(path, "/"), do: path, else: "/#{path}"
+    "#{base}#{path}"
+  end
+
   def item(assigns) do
     ~H"""
     <.layout site_settings={@site_settings} locations={@locations} title={@item.title}>
@@ -23,11 +39,11 @@ defmodule LocalCafe do
           <p class="menu-item-description"><%= @item.description %></p>
           <ul class="menu-item-tags">
             <li class="menu-tag" :for={tag <- @item.tags}>
-              <a href={"/#filter:#{tag}"}><%= tag %></a>
+              <a href={path(assigns, "/#filter:#{tag}")}><%= tag %></a>
             </li>
           </ul>
         </header>
-        <img :if={@item.image} src={@item.image} alt={@item.title} class="menu-item-image" />
+        <img :if={@item.image} src={path(assigns, @item.image)} alt={@item.title} class="menu-item-image" />
         <div class="menu-item-body">
           <%= raw @item.body %>
         </div>
@@ -46,11 +62,11 @@ defmodule LocalCafe do
         <div class="hero-slideshow" :if={@site_settings.hero_image && is_list(@site_settings.hero_image)}>
           <img
             :for={{img, idx} <- Enum.with_index(@site_settings.hero_image)}
-            src={img}
+            src={path(assigns, img)}
             class={"hero-slide #{if idx == 0, do: "active", else: ""}"}
           />
         </div>
-        <img src={@site_settings.hero_image} :if={@site_settings.hero_image && is_binary(@site_settings.hero_image)} />
+        <img src={path(assigns, @site_settings.hero_image)} :if={@site_settings.hero_image && is_binary(@site_settings.hero_image)} />
         <p :for={hero <- @site_settings.hero}>{hero}</p>
       </div>
       <section id="menu" class="menu-section">
@@ -61,10 +77,10 @@ defmodule LocalCafe do
         </div>
         <div class="menu-grid">
         <article class="menu-card" :for={item <- @items} data-tags={Enum.join(item.tags, ",")}>
-          <a href={item.path}><img :if={item.image} src={item.image} alt={item.title} class="menu-card-image" /></a>
+          <a href={path(assigns, item.path)}><img :if={item.image} src={path(assigns, item.image)} alt={item.title} class="menu-card-image" /></a>
           <div class="menu-card-header">
             <h2 class="menu-card-title">
-              <a href={item.path}><%= item.title %></a>
+              <a href={path(assigns, item.path)}><%= item.title %></a>
             </h2>
             <div class="menu-card-prices" :if={item.prices && is_binary(item.prices)}>
               <span class="price-option"><%= item.prices %></span>
@@ -78,7 +94,7 @@ defmodule LocalCafe do
           <p class="menu-card-description"><%= item.description %></p>
           <ul class="menu-card-tags">
             <li class="menu-tag" :for={tag <- item.tags}>
-              <a href={"/#filter:#{tag}"}><%= tag %></a>
+              <a href={path(assigns, "/#filter:#{tag}")}><%= tag %></a>
             </li>
           </ul>
         </article>
@@ -121,14 +137,14 @@ defmodule LocalCafe do
           content={if @site_settings.domain, do: "#{@site_settings.domain}#{@site_settings.image}", else: @site_settings.image}
         />
 
-        <link rel="stylesheet" href="/assets/css/app.css" />
-        <script defer src="/assets/js/app.js"></script>
+        <link rel="stylesheet" href={path(assigns, "/assets/css/app.css")} />
+        <script defer src={path(assigns, "/assets/js/app.js")}></script>
       </head>
       <body>
         <header class="site-header">
           <nav class="site-nav">
-            <a href="/" class="site-logo">
-              <img :if={@site_settings.logo} src={@site_settings.logo} alt={@site_settings.site_name} class="site-logo-image" />
+            <a href={path(assigns, "/")} class="site-logo">
+              <img :if={@site_settings.logo} src={path(assigns, @site_settings.logo)} alt={@site_settings.site_name} class="site-logo-image" />
               <span class="site-logo-text">{@site_settings.site_name}</span>
             </a>
             <input type="checkbox" id="nav-toggle" class="nav-toggle" />
@@ -138,8 +154,8 @@ defmodule LocalCafe do
               <span></span>
             </label>
             <ul class="nav-links">
-              <li><a href="/#menu">Menu</a></li>
-              <li><a href="#locations">Locations</a></li>
+              <li><a href={path(assigns, "/#menu")}>Menu</a></li>
+              <li><a href={path(assigns, "#locations")}>Locations</a></li>
             </ul>
           </nav>
         </header>
@@ -188,7 +204,7 @@ defmodule LocalCafe do
           <div class="footer-bottom">
             <p>&copy; 2025 {@site_settings.site_name}. All rights reserved.</p>
             <a href="https://localcafe.org" class="built-with-badge" target="_blank" rel="noopener noreferrer">
-              <img src="/images/localcafe.svg" alt="LocalCafe" class="built-with-logo" />
+              <img src={path(assigns, "/images/localcafe.svg")} alt="LocalCafe" class="built-with-logo" />
 
               <span>Built with</span>
               <span>localcafe.org</span>

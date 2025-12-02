@@ -8,7 +8,7 @@
   logo: "/images/logo.png",
   hero: ["Fresh, delicious pasta made with love.", "Discover our selection of carefully crafted dishes."],
   hero_image: ["/images/hero_1.jpg", "/images/hero_2.jpg", "/images/hero_3.jpg"],
-  domain: "https://yourdomain.com"
+  domain: "https://lite.localcafe.org/"
 }
 ---
 

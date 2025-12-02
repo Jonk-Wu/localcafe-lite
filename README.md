@@ -57,9 +57,15 @@ Edit `priv/home.md` to configure your site:
   logo: "/images/logo.png",               # Optional: Logo in navigation
   hero: ["Main headline", "Subheading"],   # Hero text lines
   hero_image: ["/images/hero_1.jpg"],      # Single image or list
-  domain: "https://yourcafe.com"           # For social sharing
+  domain: "https://yourcafe.com"          # Full URL including path for GitHub Pages
 }
 ```
+
+**Note on `domain`:**
+- For root domain: `domain: "https://yourcafe.com"`
+- For GitHub Pages subdirectory: `domain: "https://username.github.io/repo-name"`
+
+The path from the domain is automatically used for all internal links.
 
 ### Menu Items
 Create markdown files in `priv/menu/`. File name becomes URL path.

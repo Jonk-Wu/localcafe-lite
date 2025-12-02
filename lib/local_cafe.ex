@@ -172,6 +172,7 @@ defmodule LocalCafe do
                 </div>
                 <div class="location-map" :if={location.latitude && location.longitude}>
                   <iframe
+                    title="openstreetmaps"
                     width="600"
                     height="400"
                     frameborder="0"

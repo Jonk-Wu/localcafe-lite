@@ -63,3 +63,6 @@ Learn more about this project at [https://github.com/Local-Cafe/localcafe-lite](
 ### Social Sharing
 - Links shared on Facebook, Twitter, Instagram show rich previews
 - Displays your photo and description automatically
+
+
+** Images in example provided by https://pixabay.com/ **
